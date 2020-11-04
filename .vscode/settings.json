@@ -1,0 +1,9 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/de/catkin_ws_v3/devel/lib/python2.7/dist-packages",
+        "/home/de/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/opt/ros/kinetic/lib/python2.7/dist-packages",
+        "/usr/local/lib/python2.7/dist-packages/hirop_perecption",
+        "/home/de/work/YOLO6d"
+    ]
+}

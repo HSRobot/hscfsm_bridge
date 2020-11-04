@@ -1,0 +1,58 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/de/catkin_ws_v3/devel/include/**",
+                "/home/de/catkin_ws/devel/include/**",
+                "/opt/ros/kinetic/include/**",
+                "/home/de/catkin_ws/src/add_collision_object/include/**",
+                "/home/de/catkin_ws/src/HS_HandGrasp/add_obstacles/include/**",
+                "/home/de/catkin_ws/src/bebop_autonomy/bebop_driver/include/**",
+                "/home/de/catkin_ws/src/hsr_irp/co605_dual_arm_gripper_ikfast_arm0_plugin/include/**",
+                "/home/de/catkin_ws/src/hsr_irp/co605_dual_arm_gripper_ikfast_arm1_plugin/include/**",
+                "/home/de/catkin_ws/src/co605_ikfast_arm_plugin/include/**",
+                "/home/de/catkin_ws/src/HsDualAppBridge/cubeParse/include/**",
+                "/home/de/catkin_ws_v3/src/daq_ros_driver/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/force_bridge/include/**",
+                "/home/de/catkin_ws/src/grasp_place/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/gripper_bridge/include/**",
+                "/home/de/catkin_ws/src/HS_HandGrasp/handrb_ui/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/hsc3api_bridge/include/**",
+                "/home/de/catkin_ws/src/hsr_co605_ikfast_arm_plugin/include/**",
+                "/home/de/catkin_ws/src/hsr_impedance/include/**",
+                "/home/de/catkin_ws/src/hsr_pedsdetection/include/**",
+                "/home/de/catkin_ws_v3/src/hsr_robot_voice/include/**",
+                "/home/de/catkin_ws_v3/src/hsr_rosi_device/include/**",
+                "/home/de/catkin_ws_v3/src/grabrb_ui/include/**",
+                "/home/de/catkin_ws/src/industrial_robot_client/include/**",
+                "/home/de/catkin_ws/src/iai_kinect2/kinect2_bridge/include/**",
+                "/home/de/catkin_ws/src/iai_kinect2/kinect2_calibration/include/**",
+                "/home/de/catkin_ws/src/iai_kinect2/kinect2_registration/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/motion_bridge/include/**",
+                "/home/de/catkin_ws/src/move_to_pick_place/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/perception_bridge/include/**",
+                "/home/de/catkin_ws/src/HS_HandGrasp/pick_place_bridge/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/pickplace_bridge/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/planner_bridge/include/**",
+                "/home/de/catkin_ws/src/HsDualAppBridge/rb_ui/include/**",
+                "/home/de/catkin_ws/src/realsense/realsense2_camera/include/**",
+                "/home/de/catkin_ws_v3/src/reception_robot/include/**",
+                "/home/de/catkin_ws/src/HsDualAppBridge/rubik_cube_solve/include/**",
+                "/home/de/catkin_ws/src/universal_robot/ur_kinematics/include/**",
+                "/home/de/catkin_ws/src/ur_modern_driver/include/**",
+                "/home/de/catkin_ws_v3/src/HIROP_ROS-3.0/vision_bridge/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
