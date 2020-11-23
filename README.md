@@ -39,3 +39,16 @@
     
 
 如 PickPlaceTask的状态机的部分步骤
+
+---
+使用的步骤：
+ 1. 启动hscfsm_bridge     -- rosrun hscfsm_bridge hscfsm_bridge
+ 2. 在路径下找到Task的动态库  rosservice call /getTaskList "{}"
+ 3. 设置task 的任务           rosservice call /setTaskServer "mode: false
+	主要的参数有：
+		mode: false //设置的模式 直接加载为调试模式 ，动态库加载为部署模式
+		taskId: 1 //为直接加载的模式使用
+		taskName: 'PickPlaceTask'" //加载的任务名称 需要与动态库的名称保持一致
+
+4. 启动 rosservice call /startTaskServer //开始task服务
+5. 关闭 rosservice call /stopTaskServer

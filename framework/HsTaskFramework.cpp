@@ -7,7 +7,7 @@ using namespace std;
 HsFsm::State HsTaskFramework::currentState;
 HsTaskFramework::HsTaskFramework()
 {
-    fsmStack = std::make_shared<fsm::stack>();
+//    fsmStack = std::make_shared<fsm::stack>();
 //    threadpool = std::make_shared<ThreadPool>(2);
 }
 
@@ -15,21 +15,34 @@ HsTaskFramework::HsTaskFramework(ros::NodeHandle &nh, std::shared_ptr<HsTaskFram
 {
     this->nh = nh;
     this->framework = fsm;
+
+    fsm->fsmStack = std::make_shared<fsm::stack>();
     this->fsmStack = fsm->fsmStack;
-    this->notitySem = std::make_shared<semaphore>(fsm->taskName);
+
+    fsm->notitySem = std::make_shared<semaphore>(fsm->taskName);
+    this->notitySem = fsm->notitySem;
+
     this->threadpool = std::make_shared<ThreadPool>(4);
+    fsm->threadpool = threadpool;
+
     this->mode = Auto;
+    fsm->mode = mode;
+
     this->taskName = fsm->taskName;
 }
 
 void HsTaskFramework::init()
 {
 
-    framework.lock()->init();
+    framework->init();
     setInitState();
 
 }
-
+/**
+ * @brief HsTaskFramework::setCommand 指令的下发异步
+ * @param cmd
+ * @return
+ */
 bool HsTaskFramework::setCommand(const CmdInputData &cmd)
 {
     //
@@ -39,7 +52,7 @@ bool HsTaskFramework::setCommand(const CmdInputData &cmd)
 
 void HsTaskFramework::quit()
 {
-    framework.lock()->quit();
+    framework->quit();
     setExitingAction();
 
 }
@@ -51,7 +64,7 @@ State HsTaskFramework::getState()
 
 bool HsTaskFramework::registerTaskList()
 {
-    return framework.lock()->registerTaskList();
+    return framework->registerTaskList();
 }
 
 void HsTaskFramework::waitRecall()
@@ -128,15 +141,16 @@ State HsTaskFramework::getTaskState()
 
 void HsTaskFramework::setTaskState(HsFsm::state state)
 {
+
     switch (mode) {
-    case Auto:
+    case Auto:{
         threadpool->enqueue(&fsm::stack::set, fsmStack.get(), state );
         break;
+    }
     case Manual:
     {
         string current = string(state);
         if(current == "init" ){
-            std::cout << "Skip the state ..... "<<std::endl;
             break;
         }
         threadpool->enqueue(&fsm::stack::set, fsmStack.get(), "Middle" );
@@ -146,24 +160,32 @@ void HsTaskFramework::setTaskState(HsFsm::state state)
         break;
     }
 
+
 }
 
 void HsTaskFramework::setInitState()
 {
     threadpool->Start();
-    fsmStack->set("init");
+    setTaskState("init");
+//    fsmStack->set("init");
 }
 
 void HsTaskFramework::setExitingAction()
 {
-    fsmStack->set("quit");
+//    fsmStack->set("quit");
+    setTaskState("quit");
 
     threadpool->Stop();
 }
 
+/**
+ * @brief HsTaskFramework::setRecallState 设置返回view 前端的数据信息
+ * @param state
+ */
 void HsTaskFramework::setRecallState(State& state)
 {
     this->currentState = state;
+    notityRecall();
 }
 
 ros::NodeHandle *HsTaskFramework::getRosHandler()

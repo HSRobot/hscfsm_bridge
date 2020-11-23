@@ -156,7 +156,7 @@ private:
     std::shared_ptr<ThreadPool> threadpool;
     static HsFsm::State currentState;
 private:
-    std::weak_ptr<HsTaskFramework> framework;
+    std::shared_ptr<HsTaskFramework> framework;
     ros::NodeHandle nh;
     Mode mode;
 

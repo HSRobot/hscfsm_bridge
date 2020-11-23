@@ -9,50 +9,49 @@ add_definitions(-D__LINUX__)
 #set(CMAKE_BUILD_TYPE "Debug")
 #set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
 FIND_PACKAGE(HPlugin REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   hirop_msgs
-#  message_generation
+  message_generation
   tf
 )
+
 
 #generate_messages(
 #  DEPENDENCIES
 #  std_msgs
 #)
+#如果编译不过 则把startTaskCmd.srv 放在hirop_msgs/srv ,catkin_make 重新编译一次
+add_service_files(
+  FILES
+  startTaskCmd.srv
+)
+generate_messages(DEPENDENCIES std_msgs)
+
 
 catkin_package(
  CATKIN_DEPENDS 
  roscpp 
-# message_runtime
  hirop_msgs
 )
+
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   src
   framework
-  framework/loader
-  appTEST
+  framework/loader  
+  ${hirop_msgs_INCLUDE_DIRS}
 )
 
-#link_directories(./3rd/lib/HsApi)
-#file(GLOB_RECURSE ALL_SOURCE "*.cpp" "*.c" "*.h")
-#file(GLOB USER_LIBS_PATH ./src/*.cpp)
+
 file(GLOB ALL_FRAMEWORK  framework/*.cpp framework/loader/*.cpp)
 file(GLOB ALL_BRIDGE_SOURCE src/*.cpp)
-list(REMOVE_ITEM ALL_BRIDGE_SOURCE /home/fshs/catkin_ws/src/HIROP_ROS-3.0/hscFsm_bridge/src/test.cpp)
-file(GLOB ALL_APPTEST appTEST/*.cpp)
-list(APPEND ALL_SOURCE ${ALL_FRAMEWORK} ${ALL_APPTEST})
-#message(${ALL_SOURCE})
 
-list(REMOVE_ITEM ALL_APPTEST /home/fshs/catkin_ws/src/HIROP_ROS-3.0/hscFsm_bridge/appTEST/VoiceCtlRobRosFunc.cpp
-    /home/fshs/catkin_ws/src/HIROP_ROS-3.0/hscFsm_bridge/appTEST/VoiceCtlRobTask.cpp )
-
-
-## HsTaskFramework 主要框架的设计
+##### HsTaskFramework 主要框架的设计
 add_library(HsTASKFramework ${ALL_FRAMEWORK})
 
 target_link_libraries(HsTASKFramework
@@ -60,21 +59,35 @@ target_link_libraries(HsTASKFramework
   ${HPlugin_LIBRARIES}
   dl
 )
+install(TARGETS HsTASKFramework DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 
-## HsTaskFramework 主要的APP上位机
-add_library(PickPlaceTask ${ALL_APPTEST})
+
+##### PickPlaceTask 子状态机APP
+##TASK 源文件
+file(GLOB PickPlaceTask_SOURCE App/pickplacetask/*.cpp)
+##TASK 头文件
+include_directories(PickPlaceTask App/pickplacetask/)
+
+add_library(PickPlaceTask ${PickPlaceTask_SOURCE})
+##TASK 输出路径
+#add_dependencies(PickPlaceTask ${hirop_msgs_EXPORTED_TARGETS}  ${PickPlaceTask_EXPORTED_TARGETS} )
 
 target_link_libraries(PickPlaceTask
   ${catkin_LIBRARIES}
   ${HPlugin_LIBRARIES}
   dl
+  HsTASKFramework
 )
+install(TARGETS  PickPlaceTask  DESTINATION ${CMAKE_BINARY_DIR}/lib)
 
 
-# 所有的代码进行集合
-add_executable(${PROJECT_NAME}  ${ALL_APPTEST} ${ALL_BRIDGE_SOURCE})
-
-add_dependencies(${PROJECT_NAME} ${hirop_msgs_EXPORTED_TARGETS}  ${${PROJECT_NAME}_EXPORTED_TARGETS} )
+##### hscfsm_bridge 主要桥
+##TASK 源文件
+add_executable(${PROJECT_NAME} ${ALL_BRIDGE_SOURCE} ${PickPlaceTask_SOURCE})
+INCLUDE_DIRECTORIES(${PROJECT_NAME}
+     ${catkin_INCLUDE_DIRS}
+     )
+add_dependencies(${PROJECT_NAME} ${hirop_msgs_EXPORTED_TARGETS} ${hscfsm_bridge_EXPORTED_TARGETS})
 
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
@@ -84,5 +97,3 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 
-#add_executable(${PROJECT_NAME}_test src/test.cpp)
-#target_link_libraries(${PROJECT_NAME}_test dl gtest boost_system boost_filesystem)

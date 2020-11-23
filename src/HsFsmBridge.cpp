@@ -1,10 +1,11 @@
 #include <HsFsmBridge.h>
 //#include "VoiceCtlRobTask.h"
-#include <pickplacetask.h>
+//#include <pickplacetask.h>
 #include <future>
 #include <hirop_msgs/taskCmdRet.h>
 #include "ros/package.h"
 #include <HsTaskFsmFactory.h>
+
 using namespace HsFsm;
 
 HsFsmBridge::HsFsmBridge(ros::NodeHandle &node):nh(node),loopStop(false),frameExist(false),running(false)
@@ -19,7 +20,10 @@ HsFsmBridge::HsFsmBridge(ros::NodeHandle &node):nh(node),loopStop(false),frameEx
 
     getStatusServer = nh.advertiseService("getStatusServer", &HsFsmBridge::getStatusCmdCB,this);
 
-    startTaskServer = nh.advertiseService("startTaskServer", &HsFsmBridge::startTaskCmdCB,this);
+//    startTaskServer = nh.advertiseService("startTaskServer", &HsFsmBridge::startTaskCmdCB,this);
+
+    startTaskAggreServer = nh.advertiseService("startTaskAggreServer", &HsFsmBridge::startTaskAggreCmdCB,this);
+
 
     stopTaskServer = nh.advertiseService("stopTaskServer", &HsFsmBridge::stopTaskCmdCB,this);
 
@@ -31,14 +35,6 @@ HsFsmBridge::HsFsmBridge(ros::NodeHandle &node):nh(node),loopStop(false),frameEx
 
     retPub = nh.advertise<hirop_msgs::taskCmdRet>(taskResTopName,1);
 
-    // 加载子任务
-//    loadTask();
-
-    // 启动循环判断
-//    cmdCbThreadLoop();
-
-    // 初始化子任务
-//    initTask();
 
 }
 
@@ -74,6 +70,8 @@ bool HsFsmBridge::getStatusCmdCB(std_srvs::EmptyRequest & req  , std_srvs::Empty
     return true;
 }
 
+
+
 bool HsFsmBridge::startTaskCmdCB(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res)
 {
     if(framework == nullptr)
@@ -100,6 +98,49 @@ bool HsFsmBridge::startTaskCmdCB(std_srvs::TriggerRequest &req, std_srvs::Trigge
     return true;
 }
 
+bool HsFsmBridge::startTaskAggreCmdCB(hirop_msgs::startTaskCmdRequest &req, hirop_msgs::startTaskCmdResponse &res)
+{
+    bool mode = static_cast<bool>(req.mode);
+    int taskId = req.taskId;
+    string taskName = req.taskName;
+    std::vector<string> temp = HsTaskFsmFactory::getClassPluginList();
+    for(auto it : temp)
+    {
+        ROS_INFO_STREAM("Find taskName: "<<it);
+    }
+
+    if(mode == false)
+    {
+        ROS_INFO_STREAM("createByTest: "<<taskId);
+        framework = HsTaskFsmFactory::createByTest(nh, taskId);
+    }else{
+        ROS_INFO_STREAM("createByPlugin: "<<taskName);
+
+        framework = HsTaskFsmFactory::createByPlugin(nh, taskName);
+    }
+    if(framework == nullptr)
+    {
+        res.ret = false;
+        return true;
+    }
+
+    // 启动循环判断
+    cmdCbThreadLoop();
+
+//    std::this_thread::sleep_for(std::chrono::seconds(1));
+    // 初始化子任务
+    initTask();
+
+
+    running = true;
+
+    res.ret = true;
+    return true;
+
+
+
+}
+
 bool HsFsmBridge::stopTaskCmdCB(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res)
 {
 
@@ -123,10 +164,13 @@ bool HsFsmBridge::setTaskHandlerCB(hirop_msgs::setFsmTaskRequest &req, hirop_msg
 {
     if(req.mode == false)
     {
+        ROS_INFO_STREAM("createByTest: "<<req.taskId);
         framework = HsTaskFsmFactory::createByTest(nh, req.taskId);
-    }else
-        framework = HsTaskFsmFactory::createByPlugin(nh, req.taskName);
+    }else{
+        ROS_INFO_STREAM("createByPlugin: "<<req.taskName);
 
+        framework = HsTaskFsmFactory::createByPlugin(nh, req.taskName);
+    }
     if(framework == nullptr)
     {
         res.result = false;
@@ -154,6 +198,7 @@ void HsFsmBridge::cmdCbThreadLoop()
     }
 
 
+    // 指令强制运行线程
     std::thread t1([&]{
         while(!loopStop){
             if(inputCmdQue.size() == 0){
@@ -167,7 +212,7 @@ void HsFsmBridge::cmdCbThreadLoop()
         }
     });
 
-    thread::id t2p;
+    //回调线程
     std::thread t2([&]{
         while(!loopStop){
 
@@ -215,7 +260,9 @@ void HsFsmBridge::cmdCbThreadLoop()
     t2.detach();
 }
 
-
+/**
+ * @brief HsFsmBridge::loadTask 主要是测试使用
+ */
 void HsFsmBridge::loadTask()
 {
 //    taskName;

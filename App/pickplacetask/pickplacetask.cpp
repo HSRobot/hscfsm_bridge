@@ -10,6 +10,14 @@ typedef std::pair<string, int> elment;
 PickPlaceTask::PickPlaceTask()
 {
     this->taskName = "PickPlaceTask";
+    std::cout << "create PickPlaceTask" << std::endl;
+
+}
+
+PickPlaceTask::~PickPlaceTask()
+{
+    std::cout << "~PickPlaceTask" << std::endl;
+
 }
 
 
@@ -54,12 +62,24 @@ bool PickPlaceTask::registerTaskList()
 
             State sta;
             sta.meassage = {"enter init state, behaviour: initing"};
-            setRecallState(sta);
-            notityRecall();
 
-            setTaskState("prepare");
+            setRecallState(sta);
+            std::cout << "enter LoopSelf" << std::endl;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            setTaskState("LoopSelf");
 
         });
+
+
+         registerTask("LoopSelf","initing", [&](callParm  &parm){
+
+            ROS_INFO("LoopSelf once ...");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            setTaskState("LoopSelf");
+         });
 
         /*
          * 必须注册的事件
@@ -102,7 +122,6 @@ bool PickPlaceTask::registerTaskList()
                 /*******/
                 sta.meassage = {"enter prepare state, behaviour: running"};
                 setRecallState(sta);
-                notityRecall();
 
                 setTaskState("run");
 

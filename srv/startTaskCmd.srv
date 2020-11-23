@@ -1,0 +1,5 @@
+bool mode
+int64 taskId
+string taskName
+---
+bool ret

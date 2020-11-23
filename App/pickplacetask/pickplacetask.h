@@ -10,8 +10,8 @@ class PickPlaceTask :public HsTaskFramework
 {
 public:
     PickPlaceTask();
-    PickPlaceTask(const string &taskName);
-
+//    PickPlaceTask(const string &taskName);
+    ~PickPlaceTask();
     /**
      * @brief init
      */

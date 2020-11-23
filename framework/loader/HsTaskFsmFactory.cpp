@@ -7,7 +7,7 @@ using namespace HSPlugin;
 
 #define TASK_REGEX "(?<=lib)\\w+(?<=Task)"
 
-#define LIB_SERACH_PATH "/home/fshs/catkin_ws/src/HIROP_ROS-3.0/build/devel/lib"
+#define LIB_SERACH_PATH  "/home/fshs/catkin_ws/devel/lib"
 
 /**
  * @brief   LIB_SERACH_PATH_ENV

@@ -19,8 +19,9 @@ public:
      * @param type
      * @return
      */
-    static std::shared_ptr<FsmFramworkInterface> createByTest(ros::NodeHandle &nh,
-                                                     int type);
+
+    static std::shared_ptr<FsmFramworkInterface> createByTest(ros::NodeHandle &nh, int type);
+
     static std::shared_ptr<FsmFramworkInterface> createByPlugin(ros::NodeHandle &nh,
                                                      const std::string &taskName);
 

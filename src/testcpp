@@ -27,8 +27,8 @@ public:
     {
 
     }
-private:
-    std::vector<std::string> taskList ;
+public:
+//    std::vector<std::string> taskList ;
 
 };
 
@@ -39,7 +39,7 @@ TEST_F(TestMap, FindPlugin)
 
     plugin->setSearchPath(LIB_SERACH_PATH_ENV);
 
-    plugin->getClassPluginList(taskList, TASK_REGEX);
+//    plugin->getClassPluginList(plugin->taskList, TASK_REGEX);
 }
 
 TEST_F(TestMap, SetTask)

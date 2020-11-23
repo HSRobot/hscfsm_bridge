@@ -11,6 +11,9 @@
 #include <std_srvs/Empty.h>
 #include <hirop_msgs/setFsmTask.h>
 #include <hirop_msgs/getFsmTaskList.h>
+#include <hirop_msgs/startTaskCmd.h>
+#include <hscfsm_bridge/startTaskCmd.h>
+
 using namespace std;
 using namespace HsFsm;
 enum FsmState{
@@ -75,6 +78,15 @@ private:
      */
     bool startTaskCmdCB(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res);
 
+    /**
+     * @brief startTaskAggreCmdCB
+     * @param req
+     * @param res
+     * @return
+     */
+    bool startTaskAggreCmdCB(hirop_msgs::startTaskCmdRequest &req, hirop_msgs::startTaskCmdResponse &res);
+
+
 
     /**
      * @brief stopTaskCmdCB
@@ -110,7 +122,7 @@ private:
     ros::NodeHandle nh;
 
     ros::ServiceServer cmdServer,getStatusServer; //cmd server call
-    ros::ServiceServer startTaskServer,stopTaskServer , getTaskListServer; //cmd server call
+    ros::ServiceServer startTaskServer,stopTaskServer , getTaskListServer,startTaskAggreServer; //cmd server call
 
     ros::ServiceServer  setTaskServer;
 
