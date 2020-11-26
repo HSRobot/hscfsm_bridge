@@ -81,6 +81,48 @@ target_link_libraries(PickPlaceTask
 install(TARGETS  PickPlaceTask  DESTINATION ${CMAKE_BINARY_DIR}/lib)
 
 
+
+##### VoiceCtlRobRosTask 单机握手 子状态机APP
+##TASK 源文件
+file(GLOB VoiceCtlRobRosTask_SOURCE App/VoiceCtlRobRosTask/*.cpp)
+##TASK 头文件
+include_directories(VoiceCtlRobRosTask App/VoiceCtlRobRosTask/)
+
+add_library(VoiceCtlRobRosTask ${VoiceCtlRobRosTask_SOURCE})
+##TASK 输出路径
+#add_dependencies(PickPlaceTask ${hirop_msgs_EXPORTED_TARGETS}  ${PickPlaceTask_EXPORTED_TARGETS} )
+
+target_link_libraries(VoiceCtlRobRosTask
+  ${catkin_LIBRARIES}
+  ${HPlugin_LIBRARIES}
+  dl
+  HsTASKFramework
+)
+install(TARGETS  VoiceCtlRobRosTask  DESTINATION ${CMAKE_BINARY_DIR}/lib)
+
+
+
+##### RubikCubeSolve 子状态机APP
+##TASK 源文件
+#file(GLOB RubikCubeSolve_SOURCE App/RubikCubeSolve/*.cpp)
+##TASK 头文件
+#include_directories(RubikCubeSolve App/RubikCubeSolve/)
+
+#add_library(RubikCubeSolve ${RubikCubeSolve_SOURCE})
+##TASK 输出路径
+#add_dependencies(PickPlaceTask ${hirop_msgs_EXPORTED_TARGETS}  ${PickPlaceTask_EXPORTED_TARGETS} )
+
+#target_link_libraries(RubikCubeSolve
+#  ${catkin_LIBRARIES}
+#  ${HPlugin_LIBRARIES}
+#  dl
+#  HsTASKFramework
+#)
+#install(TARGETS  RubikCubeSolve  DESTINATION ${CMAKE_BINARY_DIR}/lib)
+
+
+
+
 ##### hscfsm_bridge 主要桥
 ##TASK 源文件
 add_executable(${PROJECT_NAME} ${ALL_BRIDGE_SOURCE} ${PickPlaceTask_SOURCE})
